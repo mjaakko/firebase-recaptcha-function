@@ -2,6 +2,8 @@ const functions = require('firebase-functions')
 const fetch = require('node-fetch')
 
 exports.getValue = functions.https.onRequest(async (request, response) => {
+    response.set('Access-Control-Allow-Origin', '*');
+
     const responseToken = request.param('token')
     if (!responseToken) {
         response.status(400).send("Missing token parameter")
@@ -17,7 +19,7 @@ exports.getValue = functions.https.onRequest(async (request, response) => {
                 const verification = await verificationResponse.json()
 
                 if (verification.success && verification.score > 0.6) {
-                    response.send(functions.config().response.value)
+                    response.send(JSON.stringify(functions.config().response.value))
                 } else {
                     response.status(403).send("You're robot!")
                 }
